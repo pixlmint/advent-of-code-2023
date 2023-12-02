@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Trebuchet {
-    private List<LocationCode> codes;
+    private final List<LocationCode> codes;
 
     public static void main(String[] args) {
         File mapFile = new File("resources/day01/codes.txt");
@@ -21,6 +21,10 @@ public class Trebuchet {
     public Trebuchet(File mapFile) throws Exception {
         this.codes = new ArrayList<>();
         this.parseFile(mapFile);
+    }
+
+    public Trebuchet(List<LocationCode> codes) {
+        this.codes = codes;
     }
 
     public int calculateTargetLocation() {
