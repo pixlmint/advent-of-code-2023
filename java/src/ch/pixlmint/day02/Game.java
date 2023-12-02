@@ -13,6 +13,7 @@ public class Game {
     public static void main(String[] args) throws Exception {
         Game game = new Game();
         game.play();
+        System.out.println(game.getSumIds());
     }
 
     public Game() throws Exception {
@@ -25,10 +26,9 @@ public class Game {
         for (String round : strRounds) {
             this.gameDraws.add(GameDraw.parseGameDrawString(round));
         }
-        System.out.println(this.getSumIds());
     }
 
-    private int getSumIds() {
+    public int getSumIds() {
         int sumIds = 0;
         for (GameDraw draw : this.gameDraws) {
             if (draw.isDrawValid()) {
