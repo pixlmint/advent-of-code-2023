@@ -11,4 +11,11 @@ public class GameTest {
         game.play();
         assertEquals(2268, game.getSumIds());
     }
+
+    @Test
+    public void testCubePowers() throws Exception {
+        Game game = new Game();
+        game.play();
+        assertEquals(63542, game.getCubesPower());
+    }
 }

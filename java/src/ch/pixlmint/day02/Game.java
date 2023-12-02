@@ -8,31 +8,41 @@ import java.util.List;
 
 public class Game {
     private String[] strRounds;
-    private final List<GameDraw> gameDraws;
+    private final List<GameRound> gameRounds;
 
     public static void main(String[] args) throws Exception {
         Game game = new Game();
         game.play();
-        System.out.println(game.getSumIds());
+        System.out.println(game);
     }
 
     public Game() throws Exception {
-        this.gameDraws = new ArrayList<>();
+        this.gameRounds = new ArrayList<>();
         File file = new File("resources/day02/cubes.txt");
         this.parseGameDraws(file);
     }
 
-    public void play() {
+    public void play() throws Exception {
         for (String round : strRounds) {
-            this.gameDraws.add(GameDraw.parseGameDrawString(round));
+            this.gameRounds.add(GameRound.parseGameDrawString(round));
         }
+    }
+
+    public int getCubesPower() {
+        int cubesPower = 0;
+
+        for (GameRound round : this.gameRounds) {
+            cubesPower += round.getCubesPower();
+        }
+
+        return cubesPower;
     }
 
     public int getSumIds() {
         int sumIds = 0;
-        for (GameDraw draw : this.gameDraws) {
-            if (draw.isDrawValid()) {
-                sumIds += draw.getDrawNumber();
+        for (GameRound draw : this.gameRounds) {
+            if (draw.isRoundValid()) {
+                sumIds += draw.getRoundNumber();
             }
         }
 
@@ -47,5 +57,11 @@ public class Game {
             lines.add(str);
         }
         this.strRounds = lines.toArray(new String[0]);
+    }
+
+    @Override
+    public String toString() {
+        return "SumIds: " + this.getSumIds() + System.lineSeparator() +
+                "Power: " + this.getCubesPower() + System.lineSeparator();
     }
 }

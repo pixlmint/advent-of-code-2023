@@ -1,92 +1,39 @@
 package ch.pixlmint.day02;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GameDraw {
-    private final List<ColoredCube> cubes;
-    private final int drawNumber;
-    private boolean isDrawValid = true;
+    private final Map<CubeColor, Integer> cubes;
 
-    public GameDraw(int drawNumber) {
-        this.cubes = new ArrayList<>();
-        this.drawNumber = drawNumber;
+    public GameDraw() {
+        this.cubes = new HashMap<>();
     }
 
-    public static GameDraw parseGameDrawString(String gameDrawString) {
-        String[] roundInformation = gameDrawString.split(":");
-        String gameMeta = roundInformation[0].trim();
-        String cubesCsv = roundInformation[1].trim();
-
-        String numberRegex = "([0-9]+)";
-        Pattern pattern = Pattern.compile(numberRegex);
-        Matcher matcher = pattern.matcher(gameMeta);
-        matcher.find();
-        int roundNumber = Integer.parseInt(matcher.group());
-        GameDraw draw = new GameDraw(roundNumber);
-
-        String[] cubes = cubesCsv.split("[,;]");
-        for (String cube : cubes) {
-            Matcher cubeCountMatcher = pattern.matcher(cube);
-            cubeCountMatcher.find();
-            int count = Integer.parseInt(cubeCountMatcher.group(1));
-            CubeColor color = CubeColor.parseColor(cube);
-            if (count > color.getMaxCount()) {
-                draw.setDrawValid(false);
-            }
-            ColoredCube newCube = new ColoredCube(color, count);
-            draw.addCube(newCube);
+    public void setCubeCount(ColoredCube cube) throws Exception {
+        if (this.cubes.containsKey(cube.getColor())) {
+            throw new Exception("Draw already container color " + cube.getCount());
         }
-
-        return draw;
+        this.cubes.put(cube.getColor(), cube.getCount());
     }
 
-    public int getDrawNumber() {
-        return this.drawNumber;
-    }
-
-    public void setDrawValid(boolean isDrawValid) {
-        this.isDrawValid = isDrawValid;
-    }
-
-    public boolean isDrawValid() {
-        return isDrawValid;
-    }
-
-    public boolean checkValidStatus() {
-        for (CubeColor color : CubeColor.values()) {
-            if (this.countCubes(color) > color.getMaxCount()) {
-                return false;
-            }
+    public int getCubeCount(CubeColor color) {
+        if (this.cubes.containsKey(color)) {
+            return this.cubes.get(color);
         }
-
-        return true;
-    }
-
-    public void addCube(ColoredCube cube) {
-        this.cubes.add(cube);
-    }
-
-    public int countCubes(CubeColor color) {
-        int count = 0;
-        for (ColoredCube cube : this.cubes) {
-            if (cube.getColor().equals(color)) {
-                count += cube.getCount();
-            }
-        }
-
-        return count;
+        return 0;
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Game ").append(this.drawNumber);
-        for (ColoredCube cube : this.cubes) {
-            sb.append(", ").append(cube.getColor().toString()).append(" ").append(cube.getCount());
+        for (CubeColor color : this.cubes.keySet()) {
+            if (!sb.toString().isEmpty()) {
+                sb.append(", ");
+            }
+            sb.append(this.cubes.get(color).toString()).append(" ").append(color.toString());
         }
+
         return sb.toString();
     }
 }
