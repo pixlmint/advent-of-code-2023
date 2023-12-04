@@ -1,5 +1,7 @@
 package ch.pixlmint.day03.helper;
 
+import ch.pixlmint.util.FileParser;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;

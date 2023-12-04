@@ -1,4 +1,4 @@
-package ch.pixlmint.day03.helper;
+package ch.pixlmint.util;
 
 import java.io.BufferedReader;
 import java.io.File;

@@ -21,6 +21,6 @@ public class SchematicLine {
     }
 
     public boolean isSymbolAtPosition(int position) {
-
+        return false;
     }
 }
