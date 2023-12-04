@@ -9,11 +9,21 @@ public class Scratchcard {
     private final int cardNumber;
     private final List<Integer> winningNumbers;
     private final List<Integer> havingNumbers;
+    private int copiesCount = 0;
 
     public Scratchcard(int cardNumber, List<Integer> winningNumbers, List<Integer> havingNumbers) {
         this.cardNumber = cardNumber;
         this.winningNumbers = winningNumbers;
         this.havingNumbers = havingNumbers;
+    }
+
+    public int copy() {
+        this.copiesCount++;
+        return this.copiesCount;
+    }
+
+    public int getCopiesCount() {
+        return this.copiesCount;
     }
 
     public int getValue() {
@@ -30,6 +40,18 @@ public class Scratchcard {
         }
 
         return value;
+    }
+
+    public int countMatches() {
+        int matchesCount = 0;
+
+        for (int num : this.winningNumbers) {
+            if (this.havingNumbers.contains(num)) {
+                matchesCount++;
+            }
+        }
+
+        return matchesCount;
     }
 
     public static Scratchcard parseCardCode(String cardCode) {
