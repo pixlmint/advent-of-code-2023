@@ -3,7 +3,9 @@ package ch.pixlmint.day01;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,5 +24,22 @@ class TrebuchetTest {
         int expected = 281;
 
         assertEquals(expected, trebuchet.calculateTargetLocation());
+    }
+
+    @Test
+    public void testCalculateLocationPart() {
+        Map<String, Integer> codeStrings = new HashMap<>();
+        codeStrings.put("two1nine", 29);
+        codeStrings.put("eightwothree", 83);
+        codeStrings.put("abcone2threexyz", 13);
+        codeStrings.put("xtwone3four", 24);
+        codeStrings.put("4nineeightseven2", 42);
+        codeStrings.put("zoneight234", 14);
+        codeStrings.put("7pqrstsixteen", 76);
+
+        for (String code : codeStrings.keySet()) {
+            LocationCode locCode = new LocationCode(code);
+            assertEquals(codeStrings.get(code), locCode.getParsedCode());
+        }
     }
 }
