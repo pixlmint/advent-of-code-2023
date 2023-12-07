@@ -38,6 +38,7 @@ class LocationCodeTest {
         codesMap.put("691", 61);
         codesMap.put("383nineeight9eightjfdhmjfrj", 38);
         codesMap.put("85one7szmffjstpbdssixpfqbbcljn6", 86);
+        codesMap.put("twone", 21);
 
         for (String codeString : codesMap.keySet()) {
             LocationCode code = new LocationCode(codeString);
