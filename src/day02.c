@@ -71,7 +71,7 @@ int solve_day02(const char *input) {
             current_word_length = 0;
             memset(current_word, 0, MAX_NUMBER_LENGTH);
             if (current_char == '\n') {
-                if (is_report_safe(numbers)) {
+                if (is_report_safe(numbers, 0)) {
                     num_safe_reports++;
                 }
                 free_array(numbers);
