@@ -35,6 +35,10 @@ void swap(int* arr, int i, int j) {
     arr[j] = i_val;
 }
 
+/**
+ * Basic sorting using insert sort
+ * @param arr the Array to sort
+ */
 void sort_integer_array(int* arr, int arr_size) {
     for (int i = 1; i < arr_size; i++) {
         int i_val = arr[i];
@@ -46,31 +50,3 @@ void sort_integer_array(int* arr, int arr_size) {
     }
 }
 
-/*char *read_file_as_lines(const char *fp) {*/
-/*    FILE *file = fopen(fp, "r");*/
-/*    if (!file) {*/
-/*        perror("Error opening input file");*/
-/*        return "";*/
-/*    }*/
-/**/
-/*    // Get length of file*/
-/*    fseek(file, 0, SEEK_END);*/
-/*    long length = ftell(file);*/
-/*    fseek(file, 0, SEEK_SET);*/
-/**/
-/*    char *cur_line = "";*/
-/*    for (int i = 0; i < length; i++) {*/
-/*        char *val = malloc(1);*/
-/*        fread(val, 1, 1, file);*/
-/**/
-/*        if (*val != '\n') {*/
-/**/
-/*        } else {*/
-/**/
-/*        }*/
-/*    }*/
-/*}*/
-
-/*char *parse_csv(const char *csv_string) {*/
-/*    char lines[2];*/
-/*}*/

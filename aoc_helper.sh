@@ -81,7 +81,7 @@ EOF
         echo "File already exists: $input_file"
     fi
 
-    bear --append -- gcc -o "$BINDIR/day$day" "$day_src" "$test_file" "$TEST_DIR/framework.h" -I"$SRC_DIR" -lcmocka
+    bear --append -- gcc -o "$BINDIR/day$day" "$day_src" "$test_file" "$TEST_DIR/framework.h" -I"$SRC_DIR" "$sources" -I"$LIB_DIR" -lcmocka
 }
 
 run_tests() {
@@ -98,7 +98,7 @@ run_tests() {
         fi
 
         echo "Running test: $test_name"
-        bear -- gcc -o "$BINDIR/$test_name" "$test_file" "$day_src" -I"$SRC_DIR" -I"$LIB_DIR" "$sources" && "$BINDIR/$test_name"
+        bear -- gcc -o "$BINDIR/$test_name" "$test_file" "$day_src" -I"$SRC_DIR" -I"$LIB_DIR" $LIB_DIR/*.c -lcmocka && "$BINDIR/$test_name"
     done
 }
 

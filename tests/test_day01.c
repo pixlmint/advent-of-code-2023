@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "day01.h"
 #include "aoc.h"
 
@@ -31,10 +32,11 @@ void test_file_reading() {
 
     // fread(num_3, 1, 1, file);
     fseek(file, 4, SEEK_SET);
-    fgets(num_4, 2, file);
+    fgets(num_4, 100, file);
     printf("Read from string:\n");
     printf("%s\n", num_3);
     printf("%s\n", num_4);
+    printf("num_4 length: %ld\n", strlen(num_4));
 }
 
 void test_sorting() {
