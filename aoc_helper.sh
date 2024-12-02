@@ -2,6 +2,7 @@
 
 BASE_DIR="$(dirname "$0")"
 SRC_DIR="$BASE_DIR/src"
+LIB_DIR="$BASE_DIR/lib"
 TEST_DIR="$BASE_DIR/tests"
 INPUT_DIR="$BASE_DIR/input"
 BINDIR="$BASE_DIR/bin"
@@ -89,6 +90,7 @@ run_tests() {
         test_name=$(basename "$test_file" .c)
         day=$(echo "$test_name" | sed 's/test_day//') # Extract day number
         day_src="$SRC_DIR/day${day}.c"
+        sources=$(find "$LIB_DIR" -name "*.c" -type f | tr '\n' ' ' | sed 's/[[:space:]]*$//')
 
         if [[ ! -f $day_src ]]; then
             echo "Source file for Day $day not found: $day_src"
@@ -96,7 +98,7 @@ run_tests() {
         fi
 
         echo "Running test: $test_name"
-        gcc -o "$BINDIR/$test_name" "$test_file" "$day_src" -I"$SRC_DIR" && "$BINDIR/$test_name"
+        bear -- gcc -o "$BINDIR/$test_name" "$test_file" "$day_src" -I"$SRC_DIR" -I"$LIB_DIR" "$sources" && "$BINDIR/$test_name"
     done
 }
 
@@ -111,6 +113,7 @@ run_program() {
     input_file="$INPUT_DIR/day${day}.txt"
     output_bin="$BINDIR/day${day}"
     temp_main="$BINDIR/main_day${day}.c"
+    sources=$(find "$LIB_DIR" -name "*.c" -type f | tr '\n' ' ' | sed 's/[[:space:]]*$//')
 
     if [[ ! -f $day_src ]]; then
         echo "Source file for Day $day not found: $day_src"
@@ -132,13 +135,15 @@ run_program() {
 #include "${day_hdr}"
 
 int main() {
-    const char *input = "$(cat "$input_file")";
+    const char *input = "$input_file";
     return solve_day${day}(input);
 }
 EOF
 
     # Compile and run the program
-    gcc -o "$output_bin" "$temp_main" "$day_src" -I"$SRC_DIR"
+    # cmd=
+    # echo "Running compile command\n$cmd"
+    bear -- gcc -o "$output_bin" "$temp_main" "$day_src" -I"$SRC_DIR" -I"$LIB_DIR" $sources
     if [[ $? -eq 0 ]]; then
         echo "Running Day $day..."
         "$output_bin"
