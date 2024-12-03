@@ -61,7 +61,7 @@ EOF
 #include <stdio.h>
 #include "day${day}.h"
 
-void test_day${day}() {
+static void test_day${day}(void **state) {
     assert_true(0);
 }
 
