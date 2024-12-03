@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include "aoc.h"
 
 
@@ -27,6 +28,15 @@ char *read_file(const char *fp) {
     input[length] = '\0';
 
     return input;
+}
+
+
+bool is_numeric(char character) {
+    return character > 47 && character < 58;
+}
+
+int char_to_int(char character) {
+    return character - 48;
 }
 
 void swap(int* arr, int i, int j) {
