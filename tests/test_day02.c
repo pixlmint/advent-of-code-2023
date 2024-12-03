@@ -88,15 +88,19 @@ static void test_is_report_safe(void **state) {
 
 static void test_is_report_safe_with_dampeners(void **state) {
     struct IntArray *test_levels = malloc(sizeof(struct IntArray));
-    int unsafe_levels[] = {1, 2, 7, 8, 9};
-    int safe_levels[] = {7, 6, 4, 2, 1};
+    int unsafe_levels_1[] = {1, 2, 7, 8, 9};
+    int safe_levels_1[] = {7, 6, 4, 2, 1};
+    int safe_levels_2[] = {1, 3, 2, 4, 5};
     test_levels->max_length = 5;
     test_levels->length = 5;
-    test_levels->values = unsafe_levels;
+    test_levels->values = unsafe_levels_1;
 
     assert_false(is_report_safe(test_levels, 1));
 
-    test_levels->values = safe_levels;
+    test_levels->values = safe_levels_1;
+    assert_true(is_report_safe(test_levels, 1));
+
+    test_levels->values = safe_levels_2;
     assert_true(is_report_safe(test_levels, 1));
 
     free(test_levels);
@@ -106,6 +110,7 @@ int main() {
     test_read_file_linebyline();
     const struct CMUnitTest tests[] = {
         cmocka_unit_test(test_is_report_safe),
+        cmocka_unit_test(test_is_report_safe_with_dampeners)
     };
  
     return cmocka_run_group_tests(tests, NULL, NULL);
