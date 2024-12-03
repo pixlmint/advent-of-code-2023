@@ -37,8 +37,8 @@ EOF
     # Create .c file
     if [[ ! -f $day_src ]]; then
         cat > "$day_src" <<EOF
-#include "day${day}.h"
 #include <stdio.h>
+#include "day${day}.h"
 
 int solve_day${day}(const char *input) {
     // TODO: Implement solution for Day ${day}
@@ -54,17 +54,24 @@ EOF
     # Create test file
     if [[ ! -f $test_file ]]; then
         cat > "$test_file" <<EOF
-#include <assert.h>
+#include <stdarg.h>
+#include <stddef.h>
+#include <setjmp.h>
+#include <cmocka.h>
 #include <stdio.h>
 #include "day${day}.h"
 
 void test_day${day}() {
-    assert(solve_day${day}("test input") == 0); // Replace with actual test case
-    printf("Day ${day} tests passed.\\n");
+    assert_true(0);
 }
 
 int main() {
-    test_day${day}();
+    const struct CMUnitTest tests[] = {
+        cmocka_unit_test(test_day{$day}),
+    };
+
+    return cmocka_run_group_tests(tests, NULL, NULL);
+
     return 0;
 }
 EOF
