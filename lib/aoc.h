@@ -32,6 +32,7 @@ struct IntMatrix *init_int_matrix(const int rows, const int cols);
 void free_matrix(struct IntMatrix *matrix);
 struct IntMatrix *transpose_int_matrix(struct IntMatrix *original);
 struct IntMatrix *flip_int_matrix(struct IntMatrix *original);
+struct IntMatrix *clone_int_matrix(struct IntMatrix *original);
 void print_matrix(struct IntMatrix *matrix);
 struct IntArray *get_diagonal_from_matrix(struct IntMatrix *matrix, int row, int col);
 

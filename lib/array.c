@@ -76,6 +76,18 @@ struct IntMatrix *transpose_int_matrix(struct IntMatrix *original) {
     return transposed;
 }
 
+struct IntMatrix *clone_int_matrix(struct IntMatrix *original) {
+    struct IntMatrix *clone = init_int_matrix(original->rows, original->cols);
+
+    for (int i = 0; i < original->rows; i++) {
+        for (int j = 0; j < original->cols; j++) {
+            clone->data[i][j] = original->data[i][j];
+        }
+    }
+
+    return clone;
+}
+
 struct IntMatrix *flip_int_matrix(struct IntMatrix *original) {
     struct IntMatrix *flipped = init_int_matrix(original->rows, original->cols);
 

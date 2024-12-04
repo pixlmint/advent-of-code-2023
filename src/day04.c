@@ -133,9 +133,62 @@ int count_total_occurrences(struct IntMatrix *mask) {
     return count_total;
 }
 
+void solve_part1(struct IntMatrix *mask) {
+    int count_total = count_total_occurrences(mask);
+    printf("Part One Solution: %d\n", count_total);
+}
+
+bool is_x_at_position(struct IntMatrix *mask, int y, int x) {
+    if (mask->data[y][x] != 2) {
+        return false;
+    }
+
+    int ul = mask->data[y - 1][x - 1];
+    int ur = mask->data[y - 1][x + 1];
+    int ll = mask->data[y + 1][x - 1];
+    int lr = mask->data[y + 1][x + 1];
+
+    if (ul == 2 || ur == 2 || ll == 2 || lr == 2) {
+        return false;
+    }
+
+    if (ul + lr != 4 || ur + ll != 4) {
+        return false;
+    }
+
+    return true;
+}
+
+int count_crosses(struct IntMatrix *mask) {
+    int crosses = 0;
+
+    for (int i = 1; i < mask->rows - 1; i++) {
+        for (int j = 1; j < mask->cols - 1; j++) {
+            if (is_x_at_position(mask, i, j)) crosses++;
+        }
+    }
+
+    return crosses;
+}
+
+
+void solve_part2(struct IntMatrix *mask) {
+    mask = clone_int_matrix(mask);
+
+    for (int i = 0; i < mask->rows; i++) {
+        for (int j = 0; j < mask->cols; j++) {
+            mask->data[i][j] = mask->data[i][j] - 1;
+        }
+    }
+
+    printf("Part 2 Solution: %d\n", count_crosses(mask));
+
+    free_matrix(mask);
+}
+
 int solve_day04(const char *input_path) {
     FILE *file = fopen(input_path, "r");
-    
+
     if (!file) {
         fprintf(stderr, "%s\n", input_path);
         return -1;
@@ -144,11 +197,10 @@ int solve_day04(const char *input_path) {
     struct IntMatrix *mask = create_mask_array(file);
     printf("%d x %d matrix\n", mask->rows, mask->cols);
     mask_input(file, mask);
-    // print_matrix(mask);
     fclose(file);
 
-    int count_total = count_total_occurrences(mask);
-    printf("Total count: %d\n", count_total);
+    solve_part1(mask);
+    solve_part2(mask);
 
     free_matrix(mask);
 
