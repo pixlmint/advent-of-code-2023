@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 #include "aoc.h"
 
 
@@ -37,6 +38,27 @@ bool is_numeric(char character) {
 
 int char_to_int(char character) {
     return character - 48;
+}
+
+int count_lines(FILE *file) {
+    char *line = malloc(sizeof(char) * 1000);
+    int lines = 0;
+    // Get length of file
+    fseek(file, 0, SEEK_END);
+    long length = ftell(file);
+    fseek(file, 0, SEEK_SET);
+
+    while (length > lines * strlen(line)) {
+        fgets(line, 1000, file);
+        lines++;
+    }
+    fseek(file, 0, SEEK_SET);
+
+    return lines;
+}
+
+int min(int x, int y) {
+    return y ^ ((x ^ y)) & -(x < y);
 }
 
 void swap(int* arr, int i, int j) {

@@ -109,6 +109,39 @@ run_tests() {
     done
 }
 
+debug_test() {
+    read -p "Enter day number: " day
+    day=$(printf "%02d" $day) # Pad to two digits
+
+    mkdir -p "$BINDIR"
+    
+    test_file="$TEST_DIR/test_day${day}.c"
+    day_src="$SRC_DIR/day${day}.c"
+    sources=$(find "$LIB_DIR" -name "*.c" -type f | tr '\n' ' ' | sed 's/[[:space:]]*$//')
+    output_bin="$BINDIR/test_day${day}_debug"
+
+    if [[ ! -f $day_src ]]; then
+        echo "Source file for Day $day not found: $day_src"
+        return 1
+    fi
+
+    if [[ ! -f $test_file ]]; then
+        echo "Test file for Day $day not found: $test_file"
+        return 1
+    fi
+
+    echo "Compiling with debug symbols..."
+    bear -- gcc -g -O0 -o "$output_bin" "$test_file" "$day_src" -I"$SRC_DIR" -I"$LIB_DIR" $LIB_DIR/*.c -lcmocka
+
+    if [[ $? -eq 0 ]]; then
+        echo "Starting GDB..."
+        gdb "$output_bin"
+    else
+        echo "Compilation failed."
+        return 1
+    fi
+}
+
 run_program() {
     read -p "Enter day number: " day
     day=$(printf "%02d" $day) # Pad to two digits (e.g., 01, 02)
@@ -169,11 +202,14 @@ case $1 in
     test)
         run_tests
         ;;
+    debug_test)
+        debug_test
+        ;;
     run)
         run_program
         ;;
     *)
-        echo "Usage: $0 {create|test|run}"
+        echo "Usage: $0 {create|test|run|debug_test}"
         exit 1
         ;;
 esac

@@ -8,8 +8,8 @@
 
 
 // Resources:
-ttps://www.gnu.org/software/libc/manual/html_node/Regular-Expressions.html
-ttp://www.mario-konrad.ch/blog/programming/regular_expressions_in_c.html
+// https://www.gnu.org/software/libc/manual/html_node/Regular-Expressions.html
+// http://www.mario-konrad.ch/blog/programming/regular_expressions_in_c.html
 
 /*
 --- Day 3: Mull It Over ---
