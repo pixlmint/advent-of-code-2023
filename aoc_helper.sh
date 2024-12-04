@@ -67,7 +67,7 @@ static void test_day${day}(void **state) {
 
 int main() {
     const struct CMUnitTest tests[] = {
-        cmocka_unit_test(test_day{$day}),
+        cmocka_unit_test(test_day${day}),
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);
