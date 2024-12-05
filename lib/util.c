@@ -41,7 +41,7 @@ int char_to_int(char character) {
 }
 
 int count_lines(FILE *file) {
-    char *line = malloc(sizeof(char) * 1000);
+    char *line = calloc(sizeof(char), 1000);
     int lines = 0;
     // Get length of file
     fseek(file, 0, SEEK_END);
@@ -53,6 +53,7 @@ int count_lines(FILE *file) {
         lines++;
     }
     fseek(file, 0, SEEK_SET);
+    free(line);
 
     return lines;
 }

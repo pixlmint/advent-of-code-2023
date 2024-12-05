@@ -33,6 +33,16 @@ int int_array_append(struct IntArray *array, int value) {
     return pos;
 }
 
+int int_array_index_of(struct IntArray *array, int search) {
+    for (int i = 0; i < array->length; i++) {
+        if (array->values[i] == search) {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
 void free_array(struct IntArray *array) {
     free(array->values);
     free(array);
@@ -128,6 +138,17 @@ void print_matrix(struct IntMatrix *matrix) {
         }
         printf("\n");
     }
+}
+
+void print_int_array(struct IntArray *arr) {
+    printf("IntArray (length %d): [", arr->length);
+    for (int i = 0; i < arr->length; i++) {
+        if (i != 0) {
+            printf(", ");
+        }
+        printf("%d", arr->values[i]);
+    }
+    printf("]\n");
 }
 
 void free_matrix(struct IntMatrix *matrix) {
