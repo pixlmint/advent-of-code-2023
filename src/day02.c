@@ -44,9 +44,11 @@ bool is_report_safe(struct IntArray *levels, int dampeners) {
                 }
             }
             if (is_report_safe(reduced_levels, dampeners - 1)) {
+                free(reduced_levels);
                 return true;
             }
         }
+        free(reduced_levels);
     }
 
     return problem_count == 0;

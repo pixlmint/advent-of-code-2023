@@ -37,6 +37,9 @@ void test_file_reading() {
     printf("%s\n", num_3);
     printf("%s\n", num_4);
     printf("num_4 length: %ld\n", strlen(num_4));
+    fclose(file);
+    free(num_3);
+    free(num_4);
 }
 
 void test_sorting() {

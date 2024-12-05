@@ -10,4 +10,7 @@ run:
 debug_test:
 	./aoc_helper.sh debug_test
 
+valgrind:
+	./aoc_helper.sh valgrind
+
 .PHONY: test create

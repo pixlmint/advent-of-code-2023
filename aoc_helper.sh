@@ -142,6 +142,40 @@ debug_test() {
     fi
 }
 
+valgrind_test() {
+    read -p "Enter day number: " day
+    day=$(printf "%02d" $day)
+
+    mkdir -p "$BINDIR"
+    
+    test_file="$TEST_DIR/test_day${day}.c"
+    day_src="$SRC_DIR/day${day}.c"
+    sources=$(find "$LIB_DIR" -name "*.c" -type f | tr '\n' ' ' | sed 's/[[:space:]]*$//')
+    output_bin="$BINDIR/test_day${day}_valgrind"
+
+    if [[ ! -f $day_src ]] || [[ ! -f $test_file ]]; then
+        echo "Source or test file for Day $day not found"
+        return 1
+    fi
+
+    echo "Compiling with debug symbols..."
+    bear -- gcc -g -O0 -o "$output_bin" "$test_file" "$day_src" -I"$SRC_DIR" -I"$LIB_DIR" $LIB_DIR/*.c -lcmocka
+
+    if [[ $? -eq 0 ]]; then
+        echo "Running Valgrind..."
+        valgrind --leak-check=full \
+                 --show-leak-kinds=all \
+                 --track-origins=yes \
+                 --verbose \
+                 --log-file="$BINDIR/valgrind_day${day}.log" \
+                 "$output_bin"
+        echo "Valgrind log saved to: $BINDIR/valgrind_day${day}.log"
+    else
+        echo "Compilation failed."
+        return 1
+    fi
+}
+
 run_program() {
     read -p "Enter day number: " day
     day=$(printf "%02d" $day) # Pad to two digits (e.g., 01, 02)
@@ -208,8 +242,11 @@ case $1 in
     run)
         run_program
         ;;
+    valgrind)
+        valgrind_test
+        ;;
     *)
-        echo "Usage: $0 {create|test|run|debug_test}"
+        echo "Usage: $0 {create|test|run|debug_test|valgrind}"
         exit 1
         ;;
 esac

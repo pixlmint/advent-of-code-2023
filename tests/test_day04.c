@@ -1,4 +1,3 @@
-#include <math.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <stdbool.h>
@@ -54,7 +53,7 @@ static void test_mask_input(void **state) {
     assert_int_equal(mask->data[6][4], 3);
     assert_int_equal(mask->data[6][5], 4);
 
-    free(mask);
+    free_matrix(mask);
 }
 
 static void test_count_lines(void **state) {
