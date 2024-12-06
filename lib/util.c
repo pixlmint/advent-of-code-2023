@@ -62,6 +62,10 @@ int min(int x, int y) {
     return y ^ ((x ^ y)) & -(x < y);
 }
 
+int max(int x, int y) {
+    return x > y ? x : y;
+}
+
 void swap(int* arr, int i, int j) {
     int i_val = arr[i];
     arr[i] = arr[j];

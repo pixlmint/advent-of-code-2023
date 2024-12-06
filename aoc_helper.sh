@@ -217,7 +217,7 @@ EOF
     # Compile and run the program
     # cmd=
     # echo "Running compile command\n$cmd"
-    bear -- gcc -o "$output_bin" "$temp_main" "$day_src" -I"$SRC_DIR" -I"$LIB_DIR" $sources
+    bear -- gcc -g -O0 -o "$output_bin" "$temp_main" "$day_src" -I"$SRC_DIR" -I"$LIB_DIR" $sources
     if [[ $? -eq 0 ]]; then
         echo "Running Day $day..."
         "$output_bin"
