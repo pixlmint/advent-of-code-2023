@@ -166,7 +166,6 @@ valgrind_test() {
         valgrind --leak-check=full \
                  --show-leak-kinds=all \
                  --track-origins=yes \
-                 --verbose \
                  --log-file="$BINDIR/valgrind_day${day}.log" \
                  "$output_bin"
         echo "Valgrind log saved to: $BINDIR/valgrind_day${day}.log"

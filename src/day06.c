@@ -23,13 +23,18 @@ void get_next_position(int direction, int* position) {
     fprintf(stderr, "Invalid direction: %d\n", direction);
 }
 
-void solve(struct Room *room) {
+int solve(struct Room *room) {
     int iter = 0;
-    while (true) {
+    bool did_not_loop = true;
+    while (did_not_loop) {
         int position[] = {room->guard_x, room->guard_y};
         get_next_position(room->direction, position);
-        if (position[0] >= room->map->rows || position[1] >= room->map->cols || position[0] < 0 || position[1] < 0) {
-            return;
+        if (
+            position[0] >= room->map->rows ||
+            position[1] >= room->map->cols ||
+            position[0] < 0 || position[1] < 0
+        ) {
+            return 0;
         }
         int value_at_position = room->map->data[position[1]][position[0]];
         if (value_at_position == OBSTACLE) {
@@ -39,19 +44,27 @@ void solve(struct Room *room) {
                 room->direction = 1;
             }
             // printf("Iter #%d, Turning right, old direction: %d, new direction: %d\n", iter, old_direction, room->direction);
-        } else if (value_at_position == EMPTY_SPACE) {
-            room->steps++;
-            room->map->data[position[1]][position[0]] = VISITED;
-            room->guard_x = position[0];
-            room->guard_y = position[1];
-            // printf("Iter #%d, visited (%d, %d)\n", iter, room->guard_x, room->guard_y);
+        /*} else if (value_at_position == EMPTY_SPACE) {*/
+        /*    room->steps++;*/
+        /*    room->map->data[position[1]][position[0]] = room->direction;*/
+        /*    room->guard_x = position[0];*/
+        /*    room->guard_y = position[1];*/
+        /*    // printf("Iter #%d, visited (%d, %d)\n", iter, room->guard_x, room->guard_y);*/
+        } else if (room->direction == value_at_position) {
+            did_not_loop = false;
         } else {
+            if (value_at_position == EMPTY_SPACE) {
+                room->steps++;
+            }
+            room->map->data[position[1]][position[0]] = room->direction;
             room->guard_x = position[0];
             room->guard_y = position[1];
             // printf("Iter #%d, (%d, %d)\n", iter, room->guard_x, room->guard_y);
         }
         iter++;
     }
+
+    return 1;
 }
 
 struct Room *init_room() {
@@ -64,9 +77,42 @@ struct Room *init_room() {
     return room;
 }
 
+struct Room *clone_room(struct Room *original) {
+    struct Room *room = init_room();
+    room->steps = original->steps;
+    room->direction = original->direction;
+    room->guard_y = original->guard_y;
+    room->guard_x = original->guard_x;
+    room->map = clone_int_matrix(original->map);
+
+    return room;
+}
+
 void free_room(struct Room *room) {
     free_matrix(room->map);
     free(room);
+}
+
+int count_possible_obstacle_placements(struct Room *room) {
+    int count = 0;
+
+    int x = 0;
+    for (int i = 0; i < room->map->rows; i++) {
+        for (int j = 0; j < room->map->cols; j++) {
+            if (room->map->data[i][j] == EMPTY_SPACE) {
+                // printf("Testing obstacle at (%d, %d)\n", i, j);
+                struct Room *test_room = clone_room(room);
+                test_room->map->data[i][j] = OBSTACLE;
+
+                count += solve(test_room);
+
+                free_room(test_room);
+                x++;
+            }
+        }
+    }
+
+    return count;
 }
 
 struct Room *read_room(FILE *file) {
@@ -112,12 +158,18 @@ struct Room *read_room(FILE *file) {
 
 int solve_day06(const char *input) {
     FILE *file = fopen(input, "r");
-    struct Room * room = read_room(file);
+    struct Room *part1_room = read_room(file);
+    fseek(file, 0, SEEK_SET);
+    solve(part1_room);
+
+    printf("Solution: %d steps\n", part1_room->steps);
+    free_room(part1_room);
+
+    struct Room *part2_room = read_room(file);
+    int possible_obstacle_positions = count_possible_obstacle_placements(part2_room);
+    printf("Possible positions for obstacles: %d\n", possible_obstacle_positions);
+
+    free_room(part2_room);
     fclose(file);
-    solve(room);
-
-    printf("Solution: %d steps\n", room->steps);
-
-    free_room(room);
     return 0; // Example solution
 }

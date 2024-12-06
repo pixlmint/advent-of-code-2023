@@ -22,8 +22,9 @@ struct Room {
 
 int solve_day06(const char *input);
 struct Room *read_room(FILE *file);
-void solve(struct Room *room);
+int solve(struct Room *room);
 void free_room(struct Room *room);
 void get_next_position(int direction, int *position);
+int count_possible_obstacle_placements(struct Room *room);
 
 #endif
