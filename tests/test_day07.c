@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <limits.h>
 #include <stdarg.h>
 #include <stddef.h>
@@ -39,8 +40,8 @@ static void test_is_valid_calculation(void **state) {
 
     // +*+
     int exp = 1312;
-    assert_true(is_valid_calculation(exp, arr));
-    assert_false(is_valid_calculation(exp + 1, arr));
+    assert_true(is_valid_calculation(exp, arr, false));
+    assert_false(is_valid_calculation(exp + 1, arr, false));
 
     free_long_array(arr);
 }
@@ -75,15 +76,31 @@ static void test_sum_valid_results(void **state) {
     struct CalculationsTable *table = parse_table_input(file);
     fclose(file);
 
-    u_long sum = sum_valid_results(table);
+    u_long sum = sum_valid_results(table, false);
     
     assert_int_equal(sum, 3749);
 
     free_calculations_table(table);
 }
 
+static void test_sum_valid_results_with_concatenation(void **state) {
+    FILE *file = fopen("tests/test_day07_input.txt", "r");
+    if (!file) {
+        perror("Unable to read input\n");
+        assert_true(false);
+    }
+    struct CalculationsTable *table = parse_table_input(file);
+    fclose(file);
+
+    u_long sum = sum_valid_results(table, true);
+    
+    assert_int_equal(sum, 11387);
+
+    free_calculations_table(table);
+}
+
 static void test_generate_combinations(void **state) {
-    struct IntMatrix *ops = generate_combinations(3);
+    struct IntMatrix *ops = generate_combinations(3, 2);
     // print_matrix(ops);
     free_matrix(ops);
 }
@@ -94,6 +111,7 @@ int main() {
         cmocka_unit_test(test_parse_calculation_row),
         cmocka_unit_test(test_is_valid_calculation),
         cmocka_unit_test(test_sum_valid_results),
+        cmocka_unit_test(test_sum_valid_results_with_concatenation),
         cmocka_unit_test(test_parse_table_input),
         cmocka_unit_test(test_generate_combinations),
     };

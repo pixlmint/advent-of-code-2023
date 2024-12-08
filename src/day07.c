@@ -28,21 +28,21 @@ void free_calculations_table(struct CalculationsTable *table) {
     free(table);
 }
 
-struct IntMatrix *generate_combinations(int num_operations) {
-    int combinations = pow(2, num_operations);
+struct IntMatrix *generate_combinations(int num_operations, int base) {
+    int combinations = pow(base, num_operations);
     struct IntMatrix *ops = init_int_matrix(combinations, num_operations);
 
     for (int i = 0; i < combinations; i++) {
-        decimal_to_binary_array(i, ops->data[i], ops->cols);
+        decimal_to_base_n_array(i, base, ops->data[i], ops->cols);
     }
 
     return ops;
 }
 
-void decimal_to_binary_array(int decimal, int* binary_array, int size) {
+void decimal_to_base_n_array(int decimal, int base, int* base_n_array, int size) {
     // Initialize array with zeros
     for (int i = 0; i < size; i++) {
-        binary_array[i] = 0;
+        base_n_array[i] = 0;
     }
     
     // Handle special case for 0
@@ -50,17 +50,22 @@ void decimal_to_binary_array(int decimal, int* binary_array, int size) {
         return;
     }
     
-    // Convert decimal to binary
+    // Convert decimal to base n
     int index = size - 1;
     while (decimal > 0 && index >= 0) {
-        binary_array[index] = decimal % 2;
-        decimal = decimal / 2;
+        base_n_array[index] = decimal % base;
+        decimal = decimal / base;
         index--;
     }
 }
 
-bool is_valid_calculation(u_long exp, struct LongArray *input) {
-    struct IntMatrix *ops = generate_combinations(input->length - 1);
+bool is_valid_calculation(u_long exp, struct LongArray *input, bool with_concatenation) {
+    struct IntMatrix *ops;
+    if (with_concatenation) {
+        ops = generate_combinations(input->length - 1, 3);
+    } else {
+        ops = generate_combinations(input->length - 1, 2);
+    }
     // print_matrix(ops);
 
     for (int i = 0; i < ops->rows; i++) {
@@ -71,9 +76,14 @@ bool is_valid_calculation(u_long exp, struct LongArray *input) {
             if (ops->data[i][x] == 0) {
                 // printf("%ld + %d = ", res, input->values[x + 1]);
                 res += input->values[x + 1];
-            } else {
+            } else if (ops->data[i][x] == 1) {
                 // printf("%ld * %d = ", res, input->values[x + 1]);
                 res *= input->values[x + 1];
+            } else {
+                char *str_res = malloc(sizeof(char) * 20);
+                sprintf(str_res, "%ld%ld", res, input->values[x + 1]);
+                res = atol(str_res);
+                free(str_res);
             }
             // printf("%ld", res);
 
@@ -141,11 +151,10 @@ struct CalculationsTable *parse_table_input(FILE *file) {
     return table;
 }
 
-u_long sum_valid_results(struct CalculationsTable *table) {
+u_long sum_valid_results(struct CalculationsTable *table, bool with_concatenation) {
     u_long sum = 0;
     for (int i = 0; i < table->num_calculations; i++) {
-        if (is_valid_calculation(table->results[i], table->inputs[i])) {
-            // printf("%ld\n", table->results[i]);
+        if (is_valid_calculation(table->results[i], table->inputs[i], with_concatenation)) {
             sum += table->results[i];
         }
     }
@@ -158,9 +167,12 @@ int solve_day07(const char *input) {
     FILE *file = fopen(input, "r");
     struct CalculationsTable *table = parse_table_input(file);
     fclose(file);
-    long sum = sum_valid_results(table);
+    long sum = sum_valid_results(table, false);
 
     printf("Result: %ld\n", sum);
+
+    long sum_concat = sum_valid_results(table, true);
+    printf("Result (with concatenation): %ld\n", sum_concat);
 
     free_calculations_table(table);
     return 0;
