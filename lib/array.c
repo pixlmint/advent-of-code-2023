@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "aoc.h"
 
+// ------------- Int Array ----------------------------------------
 struct IntArray *init_int_array(const int max_length) {
     struct IntArray *numbers = malloc(sizeof(struct IntArray));
     numbers->length = 0;
@@ -13,13 +14,7 @@ struct IntArray *init_int_array(const int max_length) {
 
 void int_array_extend(struct IntArray *array) {
     array->max_length += array->max_length / 2;
-    int* original_array = array->values;
-
-    array->values = malloc(sizeof(int) * array->max_length);
-    for (int i = 0; i < array->length; i++) {
-        array->values[i] = original_array[i];
-    }
-    free(original_array);
+    array->values = realloc(array->values, sizeof(int) * array->max_length);
 }
 
 int int_array_append(struct IntArray *array, int value) {
@@ -60,6 +55,71 @@ int *copy_array_section(int *source, int start, int end) {
 
     return copy;
 }
+
+void print_int_array(struct IntArray *arr) {
+    printf("IntArray (length %d): [", arr->length);
+    for (int i = 0; i < arr->length; i++) {
+        if (i != 0) {
+            printf(", ");
+        }
+        printf("%d", arr->values[i]);
+    }
+    printf("]\n");
+}
+
+// ------------- Long Array ----------------------------------------
+struct LongArray *init_long_array(const int max_length) {
+    struct LongArray *numbers = malloc(sizeof(struct LongArray));
+    numbers->length = 0;
+    numbers->max_length = max_length;
+    numbers->values = malloc(sizeof(long) * max_length);
+
+    return numbers;
+}
+
+void long_array_extend(struct LongArray *array) {
+    array->max_length += array->max_length / 2;
+    array->values = realloc(array->values, sizeof(long) * array->max_length);
+}
+
+int long_array_append(struct LongArray *array, long value) {
+    if (array->length == array->max_length) {
+        long_array_extend(array); 
+    }
+    int pos = array->length;
+
+    array->values[pos] = value;
+    array->length += 1;
+    return pos;
+}
+
+int long_array_index_of(struct LongArray *array, long search) {
+    for (int i = 0; i < array->length; i++) {
+        if (array->values[i] == search) {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+void free_long_array(struct LongArray *array) {
+    free(array->values);
+    free(array);
+}
+
+void print_long_array(struct LongArray *arr) {
+    printf("LongArray (length %d): [", arr->length);
+    for (int i = 0; i < arr->length; i++) {
+        if (i != 0) {
+            printf(", ");
+        }
+        printf("%ld", arr->values[i]);
+    }
+    printf("]\n");
+}
+
+// ------------- Int Matrices ----------------------------------------
 
 struct IntMatrix *init_int_matrix(const int rows, const int cols) {
     struct IntMatrix *m = malloc(sizeof(struct IntMatrix));
@@ -138,17 +198,6 @@ void print_matrix(struct IntMatrix *matrix) {
         }
         printf("\n");
     }
-}
-
-void print_int_array(struct IntArray *arr) {
-    printf("IntArray (length %d): [", arr->length);
-    for (int i = 0; i < arr->length; i++) {
-        if (i != 0) {
-            printf(", ");
-        }
-        printf("%d", arr->values[i]);
-    }
-    printf("]\n");
 }
 
 void free_matrix(struct IntMatrix *matrix) {

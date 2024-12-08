@@ -41,19 +41,13 @@ int char_to_int(char character) {
 }
 
 int count_lines(FILE *file) {
-    char *line = calloc(sizeof(char), 1000);
+    char line[1000];
     int lines = 0;
-    // Get length of file
-    fseek(file, 0, SEEK_END);
-    long length = ftell(file);
-    fseek(file, 0, SEEK_SET);
 
-    while (length > lines * strlen(line)) {
-        fgets(line, 1000, file);
+    while (fgets(line, sizeof(line), file)) {
         lines++;
     }
     fseek(file, 0, SEEK_SET);
-    free(line);
 
     return lines;
 }
@@ -64,6 +58,15 @@ int min(int x, int y) {
 
 int max(int x, int y) {
     return x > y ? x : y;
+}
+
+double pow(double base, double exponent) {
+    double result = 1.0;
+    while (exponent != 0) {
+        result *= base;
+        --exponent;
+    }
+    return result;
 }
 
 void swap(int* arr, int i, int j) {
