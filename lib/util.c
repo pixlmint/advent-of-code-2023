@@ -52,6 +52,35 @@ int count_lines(FILE *file) {
     return lines;
 }
 
+/**
+ * Helper function for `count_columns` to make sure
+ * this doesn't break past 1000 column wide lines
+ */
+int _count_columns_maxstr(FILE *file, int max_strlen) {
+    char *line = calloc(max_strlen, sizeof(char));
+    fgets(line, max_strlen, file);
+    int num_cols = strlen(line);
+    fseek(file, 0, SEEK_SET);
+    if (line[num_cols - 1] == '\n') {
+        line[num_cols - 1] = '\0';
+        num_cols--;
+    }
+    free(line);
+    return num_cols;
+}
+
+int count_columns(FILE *file) {
+    int maxlen = 1000;
+    int count = _count_columns_maxstr(file, maxlen);
+
+    while (maxlen * 0.95 <= count) {
+        maxlen = maxlen * 1.5;
+        count = _count_columns_maxstr(file, maxlen);
+    }
+
+    return count;
+}
+
 int min(int x, int y) {
     return y ^ ((x ^ y)) & -(x < y);
 }

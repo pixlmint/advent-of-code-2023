@@ -1,10 +1,9 @@
-#include <math.h>
 #include <stdlib.h>
 #include "aoc.h"
 
 // ------------- Int Array ----------------------------------------
-struct IntArray *init_int_array(const int max_length) {
-    struct IntArray *numbers = malloc(sizeof(struct IntArray));
+IntArray *init_int_array(const int max_length) {
+    IntArray *numbers = malloc(sizeof(IntArray));
     numbers->length = 0;
     numbers->max_length = max_length;
     numbers->values = malloc(sizeof(int) * max_length);
@@ -12,12 +11,12 @@ struct IntArray *init_int_array(const int max_length) {
     return numbers;
 }
 
-void int_array_extend(struct IntArray *array) {
+void int_array_extend(IntArray *array) {
     array->max_length += array->max_length / 2;
     array->values = realloc(array->values, sizeof(int) * array->max_length);
 }
 
-int int_array_append(struct IntArray *array, int value) {
+int int_array_append(IntArray *array, int value) {
     if (array->length == array->max_length) {
         int_array_extend(array); 
     }
@@ -28,7 +27,7 @@ int int_array_append(struct IntArray *array, int value) {
     return pos;
 }
 
-int int_array_index_of(struct IntArray *array, int search) {
+int int_array_index_of(IntArray *array, int search) {
     for (int i = 0; i < array->length; i++) {
         if (array->values[i] == search) {
             return i;
@@ -56,7 +55,7 @@ int *copy_array_section(int *source, int start, int end) {
     return copy;
 }
 
-void print_int_array(struct IntArray *arr) {
+void print_int_array(IntArray *arr) {
     printf("IntArray (length %d): [", arr->length);
     for (int i = 0; i < arr->length; i++) {
         if (i != 0) {
@@ -69,7 +68,7 @@ void print_int_array(struct IntArray *arr) {
 
 // ------------- Long Array ----------------------------------------
 struct LongArray *init_long_array(const int max_length) {
-    struct LongArray *numbers = malloc(sizeof(struct LongArray));
+    LongArray *numbers = malloc(sizeof(struct LongArray));
     numbers->length = 0;
     numbers->max_length = max_length;
     numbers->values = malloc(sizeof(long) * max_length);
@@ -93,7 +92,7 @@ int long_array_append(struct LongArray *array, long value) {
     return pos;
 }
 
-int long_array_index_of(struct LongArray *array, long search) {
+int long_array_index_of(LongArray *array, long search) {
     for (int i = 0; i < array->length; i++) {
         if (array->values[i] == search) {
             return i;
@@ -103,12 +102,12 @@ int long_array_index_of(struct LongArray *array, long search) {
     return -1;
 }
 
-void free_long_array(struct LongArray *array) {
+void free_long_array(LongArray *array) {
     free(array->values);
     free(array);
 }
 
-void print_long_array(struct LongArray *arr) {
+void print_long_array(LongArray *arr) {
     printf("LongArray (length %d): [", arr->length);
     for (int i = 0; i < arr->length; i++) {
         if (i != 0) {
@@ -119,10 +118,64 @@ void print_long_array(struct LongArray *arr) {
     printf("]\n");
 }
 
+
+// ------------- Point Arrays ----------------------------------------
+
+PointArray *init_point_array(int max_length) {
+    PointArray *arr = malloc(sizeof(PointArray));
+    arr->max_length = max_length;
+    arr->length = 0;
+    arr->points = malloc(sizeof(Point *) * max_length);
+
+    return arr;
+}
+
+void _point_array_extend(PointArray *array) {
+    array->max_length += array->max_length / 2;
+    array->points = realloc(array->points, sizeof(Point) * array->max_length);
+}
+
+int point_array_append(PointArray *arr, Point *point) {
+    if (arr->length == arr->max_length) {
+        _point_array_extend(arr); 
+    }
+    int pos = arr->length;
+    arr->points[pos] = point;
+    arr->length++;
+
+    return pos;
+}
+
+int append_coords(PointArray *arr, int x, int y) {
+    Point *p = malloc(sizeof(Point));
+    p->x = x;
+    p->y = y;
+    return point_array_append(arr, p);
+}
+
+int point_array_index_of(PointArray *arr, Point *search) {
+    for (int i = 0; i < arr->length; i++) {
+        Point *p = arr->points[i];
+        if (p->x == search->x && p->y == search->y) {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+void free_point_array(PointArray *arr) {
+    for (int i = 0; i < arr->length; i++) {
+        free(arr->points[i]);
+    }
+    free(arr->points);
+    free(arr);
+}
+
 // ------------- Int Matrices ----------------------------------------
 
 struct IntMatrix *init_int_matrix(const int rows, const int cols) {
-    struct IntMatrix *m = malloc(sizeof(struct IntMatrix));
+    IntMatrix *m = malloc(sizeof(IntMatrix));
     m->cols = cols;
     m->rows = rows;
     m->data = malloc(rows * sizeof(int*));
@@ -134,8 +187,8 @@ struct IntMatrix *init_int_matrix(const int rows, const int cols) {
     return m;
 }
 
-struct IntMatrix *transpose_int_matrix(struct IntMatrix *original) {
-    struct IntMatrix *transposed = init_int_matrix(original->cols, original->rows);
+IntMatrix *transpose_int_matrix(IntMatrix *original) {
+    IntMatrix *transposed = init_int_matrix(original->cols, original->rows);
 
     for (int i = 0; i < original->rows; i++) {
         for (int j = 0; j < original->cols; j++) {
@@ -146,8 +199,8 @@ struct IntMatrix *transpose_int_matrix(struct IntMatrix *original) {
     return transposed;
 }
 
-struct IntMatrix *clone_int_matrix(struct IntMatrix *original) {
-    struct IntMatrix *clone = init_int_matrix(original->rows, original->cols);
+IntMatrix *clone_int_matrix(IntMatrix *original) {
+    IntMatrix *clone = init_int_matrix(original->rows, original->cols);
 
     for (int i = 0; i < original->rows; i++) {
         for (int j = 0; j < original->cols; j++) {
@@ -158,8 +211,8 @@ struct IntMatrix *clone_int_matrix(struct IntMatrix *original) {
     return clone;
 }
 
-struct IntMatrix *flip_int_matrix(struct IntMatrix *original) {
-    struct IntMatrix *flipped = init_int_matrix(original->rows, original->cols);
+IntMatrix *flip_int_matrix(IntMatrix *original) {
+    IntMatrix *flipped = init_int_matrix(original->rows, original->cols);
 
     for (int i = 0; i < original->rows; i++) {
         for (int j = 0; j < original->cols; j++) {
@@ -170,8 +223,8 @@ struct IntMatrix *flip_int_matrix(struct IntMatrix *original) {
     return flipped;
 }
 
-struct IntArray *get_diagonal_from_matrix(struct IntMatrix *matrix, int row, int col) {
-    struct IntArray *arr = init_int_array(matrix->cols + matrix->rows);
+IntArray *get_diagonal_from_matrix(IntMatrix *matrix, int row, int col) {
+    IntArray *arr = init_int_array(matrix->cols + matrix->rows);
     if (row == 0 && col == 0) {
         for (int i = col; i < min(matrix->cols, matrix->rows); i++) {
             int_array_append(arr, matrix->data[i - col][i]);
@@ -189,7 +242,7 @@ struct IntArray *get_diagonal_from_matrix(struct IntMatrix *matrix, int row, int
     return arr;
 }
 
-void print_matrix(struct IntMatrix *matrix) {
+void print_matrix(IntMatrix *matrix) {
     for (int i = 0; i < matrix->rows; i++) {
         printf("| ");
         for (int j = 0; j < matrix->cols; j++) {
@@ -200,7 +253,17 @@ void print_matrix(struct IntMatrix *matrix) {
     }
 }
 
-void free_matrix(struct IntMatrix *matrix) {
+void print_matrix_as_char(IntMatrix *matrix) {
+    for (int i = 0; i < matrix->rows; i++) {
+        printf("| ");
+        for (int j = 0; j < matrix->cols; j++) {
+            printf("%c | ", matrix->data[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+void free_matrix(IntMatrix *matrix) {
     for (int i = 0; i < matrix->rows; i++) {
         free(matrix->data[i]);
     }

@@ -5,49 +5,68 @@
 char *read_file(const char *fp);
 void sort_integer_array(int* arr, int arr_size);
 
-struct IntArray {
+typedef struct IntArray {
     int length;
     int max_length;
     int *values;
-};
+} IntArray;
 
-struct LongArray {
+typedef struct LongArray {
     int length;
     int max_length;
     long *values;
-};
+} LongArray;
 
-struct IntMatrix {
+typedef struct IntMatrix {
     int **data;
     int rows;
     int cols;
-};
+} IntMatrix;
+
+typedef struct Point {
+    int x;
+    int y;
+} Point;
+
+typedef struct PointArray {
+    int length;
+    int max_length;
+    Point **points;
+} PointArray;
 
 
-struct IntArray *init_int_array(const int max_length);
-struct LongArray *init_long_array(const int max_length);
+IntArray *init_int_array(const int max_length);
+LongArray *init_long_array(const int max_length);
+PointArray *init_point_array(const int max_length);
 
-int int_array_append(struct IntArray *array, int value);
-int long_array_append(struct LongArray *array, long value);
-int int_array_index_of(struct IntArray *array, int search);
-int long_array_index_of(struct LongArray *array, long search);
-void free_array(struct IntArray *array);
-void free_long_array(struct LongArray *array);
-void print_int_array(struct IntArray *arr);
-void print_long_array(struct LongArray *arr);
+
+int int_array_append(IntArray *array, int value);
+int long_array_append(LongArray *array, long value);
+int point_array_append(PointArray *arr, Point *point);
+int append_coords(PointArray *arr, int x, int y);
+int int_array_index_of(IntArray *array, int search);
+int long_array_index_of(LongArray *array, long search);
+int point_array_index_of(PointArray *arr, Point *search);
+void free_array(IntArray *array);
+void free_long_array(LongArray *array);
+void free_point_array(PointArray *arr);
+void print_int_array(IntArray *arr);
+void print_long_array(LongArray *arr);
 
 bool is_numeric(char character);
 int char_to_int(char character);
 
 int count_lines(FILE *file);
+int count_columns(FILE *file);
 
-struct IntMatrix *init_int_matrix(const int rows, const int cols);
-void free_matrix(struct IntMatrix *matrix);
-struct IntMatrix *transpose_int_matrix(struct IntMatrix *original);
-struct IntMatrix *flip_int_matrix(struct IntMatrix *original);
-struct IntMatrix *clone_int_matrix(struct IntMatrix *original);
-void print_matrix(struct IntMatrix *matrix);
-struct IntArray *get_diagonal_from_matrix(struct IntMatrix *matrix, int row, int col);
+IntMatrix *init_int_matrix(const int rows, const int cols);
+void free_matrix(IntMatrix *matrix);
+IntMatrix *transpose_int_matrix(IntMatrix *original);
+IntMatrix *flip_int_matrix(IntMatrix *original);
+IntMatrix *clone_int_matrix(IntMatrix *original);
+void print_matrix(IntMatrix *matrix);
+void print_matrix_as_char(IntMatrix *matrix);
+IntArray *get_diagonal_from_matrix(IntMatrix *matrix, int row, int col);
 
 int *copy_array_section(int* source, int start, int end);
 
