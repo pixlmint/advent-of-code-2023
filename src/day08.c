@@ -9,7 +9,8 @@ void free_antenna_type_array(AntennaTypeArray *types) {
         free_point_array(types->types[i]->points);
         free(types->types[i]);
     }
-    free_point_array(types->antinodes);
+    free_point_array(types->part1_antinodes);
+    free_point_array(types->part2_antinodes);
     free(types->types);
     free(types);
 }
@@ -20,6 +21,45 @@ void calculate_antinode_positions(Point *a, Point *b, Point *c, Point *d) {
 
     d->x = 2 * b->x - a->x;
     d->y = 2 * b->y - a->y;
+}
+
+PointArray *calculate_points_in_range(Point *start, Point *vec, int x_max, int y_max) {
+    PointArray *points = init_point_array(10);
+    int c = gcd((int) vec->x, (int) vec->y);
+    // printf("Vec: (%f, %f)\n", vec->x, vec->y);
+    // printf("GGT: %d\n", c);
+    Point *min = malloc(sizeof(Point));
+    Point *cur = malloc(sizeof(Point));
+    min->x = vec->x / c;
+    min->y = vec->y / c;
+    cur->x = start->x;
+    cur->y = start->y;
+
+    while (cur->x < x_max && cur->x >= 0 && cur->y < y_max && cur->y >= 0) {
+        // printf("Test (%f, %f)\n", cur->x, cur->y);
+
+        if (point_array_index_of(points, cur) == -1) {
+            append_coords(points, cur->x, cur->y);
+        }
+
+        cur->x += min->x;
+        cur->y += min->y;
+    }
+    // cur->x = start->x;
+    // cur->y = start->y;
+    // while (cur->x <= x_max && cur->x >= 0 && cur->y <= y_max && cur->y >= 0) {
+    //     cur->x -= min->x;
+    //     cur->y -= min->y;
+
+    //     if (point_array_index_of(points, cur) == -1) {
+    //         append_coords(points, cur->x, cur->y);
+    //     }
+    // }
+
+    free(min);
+    free(cur);
+
+    return points;
 }
 
 IntMatrix *generate_matrix(AntennaTypeArray *a) {
@@ -38,21 +78,22 @@ IntMatrix *generate_matrix(AntennaTypeArray *a) {
         }
     }
 
-    for (int i = 0; i < a->antinodes->length; i++) {
-        Point *p = a->antinodes->points[i];
+    for (int i = 0; i < a->part2_antinodes->length; i++) {
+        Point *p = a->part2_antinodes->points[i];
         map->data[(int) p->y][(int) p->x] = '#';
     }
 
     return map;
 }
 
-int count_antinodes(AntennaTypeArray *a) {
+void count_antinodes(AntennaTypeArray *a) {
     for (int i = 0; i < a->length; i++) {
         AntennaType *ta = a->types[i];
         for (int j = 0; j < ta->points->length; j++) {
             Point *p = ta->points->points[j];
             for (int o = j + 1; o < ta->points->length; o++) {
                 Point *p2 = ta->points->points[o];
+                // Part 1
                 PointArray *antinodes = init_point_array(2);
                 append_coords(antinodes, 0, 0);
                 append_coords(antinodes, 0, 0);
@@ -62,17 +103,36 @@ int count_antinodes(AntennaTypeArray *a) {
                 for (int pp = 0; pp < 2; pp++) {
                     Point *ab = antinodes->points[pp];
                     if (ab->x >= 0 && ab->x < a->max_x && ab->y >= 0 && ab->y < a->max_y) {
-                        // printf("Found Antinode for %c: (%d, %d)\n", ta->value, ab->x, ab->y);
-                        if (point_array_index_of(a->antinodes, ab) == -1) {
-                            append_coords(a->antinodes, ab->x, ab->y); 
+                        if (point_array_index_of(a->part1_antinodes, ab) == -1) {
+                            append_coords(a->part1_antinodes, ab->x, ab->y); 
                         }
                     }
                 }
                 free_point_array(antinodes);
+
+                // Part 2
+                Point *vec = malloc(sizeof(Point));
+                vec->x = p->x - p2->x;
+                vec->y = p->y - p2->y;
+
+                PointArray *p2_antinodes = calculate_points_in_range(p, vec, a->max_x, a->max_y);
+                PointArray *merged = point_array_merge(a->part2_antinodes, p2_antinodes);
+                free(a->part2_antinodes);
+                free_point_array(p2_antinodes);
+                a->part2_antinodes = merged;
+
+                vec->x = p2->x - p->x;
+                vec->y = p2->y - p->y;
+
+                p2_antinodes = calculate_points_in_range(p2, vec, a->max_x, a->max_y);
+                merged = point_array_merge(a->part2_antinodes, p2_antinodes);
+                free(a->part2_antinodes);
+                free_point_array(p2_antinodes);
+                free(vec);
+                a->part2_antinodes = merged;
             }
         }
     }
-    return a->antinodes->length;
 }
 
 void register_antenna_position(AntennaTypeArray *types, int antenna_type, int x, int y) {
@@ -100,7 +160,8 @@ AntennaTypeArray *read_map(FILE *file) {
     AntennaTypeArray *types = malloc(sizeof(AntennaTypeArray));
     types->types = malloc(sizeof(AntennaType*) * 100);
     types->length = 0;
-    types->antinodes = init_point_array(20);
+    types->part1_antinodes = init_point_array(20);
+    types->part2_antinodes = init_point_array(20);
     int lines = count_lines(file);
     int cols = count_columns(file);
     types->max_x = cols;
@@ -129,11 +190,13 @@ AntennaTypeArray *read_map(FILE *file) {
 int solve_day08(const char *input) {
     FILE *file = fopen(input, "r");
     AntennaTypeArray *map = read_map(file);
-    int count = count_antinodes(map);
-    printf("Count: %d\n", count);
+    count_antinodes(map);
     IntMatrix *matrix = generate_matrix(map);
     print_matrix_as_char(matrix);
     free_matrix(matrix);
+
+    printf("Part 1: %d\n", map->part1_antinodes->length);
+    printf("Part 2: %d\n", map->part2_antinodes->length);
     free_antenna_type_array(map);
     fclose(file);
     return 0;

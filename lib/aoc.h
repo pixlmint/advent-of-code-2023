@@ -64,9 +64,7 @@ int point_array_append(PointArray *arr, Point *point);
 int append_coords(PointArray *arr, double x, double y);
 int point_array_index_of(PointArray *arr, Point *search);
 void free_point_array(PointArray *arr);
-
-bool is_numeric(char character);
-int char_to_int(char character);
+PointArray *point_array_merge(PointArray *a, PointArray *b);
 
 
 // ------------- File Handling ----------------------------------
@@ -78,5 +76,9 @@ int count_columns(FILE *file);
 // ------------- Other -----------------------------------------
 int min(int x, int y);
 double pow(double base, double exponent);
+int gcd(int a, int b);
+
+bool is_numeric(char character);
+int char_to_int(char character);
 
 #endif

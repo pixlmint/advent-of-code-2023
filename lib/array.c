@@ -163,6 +163,24 @@ int point_array_index_of(PointArray *arr, Point *search) {
     return -1;
 }
 
+PointArray *point_array_merge(PointArray *a, PointArray *b) {
+    PointArray *merged = init_point_array(a->length + b->length);
+
+    for (int i = 0; i < a->length; i++) {
+        merged->points[i] = a->points[i];
+        merged->length++;
+    }
+
+    for (int i = 0; i < b->length; i++) {
+        Point *p = b->points[i];
+        if (point_array_index_of(merged, p) == -1) {
+            append_coords(merged, p->x, p->y);
+        }
+    }
+
+    return merged;
+}
+
 void free_point_array(PointArray *arr) {
     for (int i = 0; i < arr->length; i++) {
         free(arr->points[i]);

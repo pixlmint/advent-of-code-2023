@@ -89,6 +89,18 @@ int max(int x, int y) {
     return x > y ? x : y;
 }
 
+int gcd(int a, int b) {
+    a = abs(a);
+    b = abs(b);
+    int gcd;
+    for(int i = 1; i <= a && i <= b; ++i) {
+        // Checks if i is factor of both integers
+        if(a %i == 0 && b %i == 0)
+            gcd = i;
+    }
+    return gcd;
+}
+
 double pow(double base, double exponent) {
     double result = 1.0;
     while (exponent != 0) {

@@ -64,12 +64,24 @@ static void test_count_antinodes(void **state) {
 
     AntennaTypeArray *map = read_map(file);
 
-    int count = count_antinodes(map);
+    count_antinodes(map);
 
-    assert_int_equal(count, 14);
+    IntMatrix *matrix = generate_matrix(map);
+    print_matrix_as_char(matrix);
+    free_matrix(matrix);
+
+    assert_int_equal(map->part1_antinodes->length, 14);
+    assert_int_equal(map->part2_antinodes->length, 34);
 
     fclose(file);
     free_antenna_type_array(map);
+}
+
+static void test_gcd(void **state) {
+    assert_int_equal(gcd(4, 6), 2);
+    assert_int_equal(gcd(14, 42), 14);
+    assert_int_equal(gcd(16, 60), 4);
+    assert_int_equal(gcd(3, -1), 1);
 }
 
 int main() {
@@ -77,6 +89,7 @@ int main() {
         cmocka_unit_test(test_count_columns),
         cmocka_unit_test(test_read_map),
         cmocka_unit_test(test_count_antinodes),
+        cmocka_unit_test(test_gcd),
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);
