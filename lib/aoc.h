@@ -80,5 +80,6 @@ int gcd(int a, int b);
 
 bool is_numeric(char character);
 int char_to_int(char character);
+int int_to_char(int number);
 
 #endif

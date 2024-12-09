@@ -40,6 +40,10 @@ int char_to_int(char character) {
     return character - 48;
 }
 
+int int_to_char(int number) {
+    return number + 48;
+}
+
 int count_lines(FILE *file) {
     char line[1000];
     int lines = 0;
