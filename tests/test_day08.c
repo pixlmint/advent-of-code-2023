@@ -66,10 +66,6 @@ static void test_count_antinodes(void **state) {
 
     count_antinodes(map);
 
-    IntMatrix *matrix = generate_matrix(map);
-    print_matrix_as_char(matrix);
-    free_matrix(matrix);
-
     assert_int_equal(map->part1_antinodes->length, 14);
     assert_int_equal(map->part2_antinodes->length, 34);
 
