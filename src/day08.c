@@ -7,6 +7,7 @@
 void free_antenna_type_array(AntennaTypeArray *types) {
     for (int i = 0; i < types->length; i++) {
         free_point_array(types->types[i]->points);
+        free(types->types[i]);
     }
     free_point_array(types->antinodes);
     free(types->types);
@@ -33,13 +34,13 @@ IntMatrix *generate_matrix(AntennaTypeArray *a) {
         AntennaType *t = a->types[i];
         for (int j = 0; j < t->points->length; j++) {
             Point *p = t->points->points[j];
-            map->data[p->y][p->x] = t->value;
+            map->data[(int) p->y][(int) p->x] = t->value;
         }
     }
 
     for (int i = 0; i < a->antinodes->length; i++) {
         Point *p = a->antinodes->points[i];
-        map->data[p->y][p->x] = '#';
+        map->data[(int) p->y][(int) p->x] = '#';
     }
 
     return map;
@@ -88,7 +89,6 @@ void register_antenna_position(AntennaTypeArray *types, int antenna_type, int x,
         t->value = antenna_type;
         t->points = init_point_array(20);
         antenna_pos = types->length;
-        types->antinodes = init_point_array(10);
         types->types[antenna_pos] = t;
         types->length++;
     }
@@ -100,6 +100,7 @@ AntennaTypeArray *read_map(FILE *file) {
     AntennaTypeArray *types = malloc(sizeof(AntennaTypeArray));
     types->types = malloc(sizeof(AntennaType*) * 100);
     types->length = 0;
+    types->antinodes = init_point_array(20);
     int lines = count_lines(file);
     int cols = count_columns(file);
     types->max_x = cols;

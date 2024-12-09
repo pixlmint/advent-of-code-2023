@@ -136,21 +136,20 @@ void _point_array_extend(PointArray *array) {
 }
 
 int point_array_append(PointArray *arr, Point *point) {
+    return append_coords(arr, point->x, point->y);
+}
+
+int append_coords(PointArray *arr, double x, double y) {
     if (arr->length == arr->max_length) {
         _point_array_extend(arr); 
     }
     int pos = arr->length;
-    arr->points[pos] = point;
-    arr->length++;
-
-    return pos;
-}
-
-int append_coords(PointArray *arr, int x, int y) {
     Point *p = malloc(sizeof(Point));
     p->x = x;
     p->y = y;
-    return point_array_append(arr, p);
+    arr->points[pos] = p;
+    arr->length++;
+    return pos;
 }
 
 int point_array_index_of(PointArray *arr, Point *search) {

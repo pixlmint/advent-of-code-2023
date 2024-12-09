@@ -61,7 +61,7 @@ typedef struct PointArray {
 
 PointArray *init_point_array(const int max_length);
 int point_array_append(PointArray *arr, Point *point);
-int append_coords(PointArray *arr, int x, int y);
+int append_coords(PointArray *arr, double x, double y);
 int point_array_index_of(PointArray *arr, Point *search);
 void free_point_array(PointArray *arr);
 

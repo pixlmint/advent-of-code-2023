@@ -55,13 +55,7 @@ static void test_read_map(void **state) {
 
     AntennaTypeArray *map = read_map(file);
 
-    /*for (int i = 0; i < map->length; i++) {*/
-    /*    printf("%c\n", map->types[i]->value);*/
-    /*    for (int j = 0; j < map->types[i]->points->length; j++) {*/
-    /*        printf("(%d, %d)\n", map->types[i]->points->points[j]->x, map->types[i]->points->points[j]->y);*/
-    /*    }*/
-    /*}*/
-
+    fclose(file);
     free_antenna_type_array(map);
 }
 
@@ -72,13 +66,9 @@ static void test_count_antinodes(void **state) {
 
     int count = count_antinodes(map);
 
-    printf("Count: %d\n", count);
     assert_int_equal(count, 14);
 
-    // IntMatrix *mat = generate_matrix(map);
-    // print_matrix_as_char(mat);
-
-    // free_matrix(mat);
+    fclose(file);
     free_antenna_type_array(map);
 }
 
