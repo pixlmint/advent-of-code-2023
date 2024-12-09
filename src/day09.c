@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include "aoc.h"
 #include "day09.h"
 
@@ -228,20 +229,29 @@ u_long calc_checksum(IntArray *arr) {
 
 int solve_day09(const char *fp) {
     char *input = read_file(fp);
+    clock_t start, end;
+    double cpu_time_used;
 
+    start = clock();
     DiscMap *map = read_disc_map(input);
     IntArray *shifted = shift_map(map);
-
     u_long checksum = calc_checksum(shifted);
+    end = clock();
+    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
     printf("Checksum: %ld\n", checksum);
+    printf("Execution Time: %fs\n", cpu_time_used);
 
     free_disc_map(map);
     free_array(shifted);
 
+    start = clock();
     map = read_disc_map(input);
     shifted = shift_map_without_fragmentation(map);
     checksum = calc_checksum(shifted);
+    end = clock();
+    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
     printf("Checksum (2): %ld\n", checksum);
+    printf("Execution Time: %fs\n", cpu_time_used);
 
     free_disc_map(map);
     free_array(shifted);
