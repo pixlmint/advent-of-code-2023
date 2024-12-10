@@ -47,11 +47,7 @@ void perf_report(Perf *perf) {
         }
         double time_taken = ((double) (stop - t->start_time)) / CLOCKS_PER_SEC;
         printf("%s: ", perf->timers[i]->name);
-        if (time_taken * 1000 < 1) {
-            printf("%fms\n", time_taken * 1000);
-        } else {
-            printf("%fs\n", time_taken);
-        }
+        printf("%fms\n", time_taken * 1000);
     }
     printf("------------------------\n");
 }
