@@ -2,6 +2,7 @@
 #define AOC
 #include <stdbool.h>
 #include <stdio.h>
+#include <time.h>
 
 
 // ------------- Int Array ----------------------------------------
@@ -81,5 +82,26 @@ int gcd(int a, int b);
 bool is_numeric(char character);
 int char_to_int(char character);
 int int_to_char(int number);
+
+
+// ------------- Perf -----------------------------------------
+
+typedef struct Timer {
+    clock_t start_time;
+    clock_t stop_time;
+    char *name;
+} Timer;
+
+typedef struct Perf {
+    int length;
+    int max_length;
+    Timer **timers;
+} Perf;
+
+Perf *perf_init();
+int timer_start(char *name, Perf *perf);
+void timer_stop(int timer, Perf *perf);
+void perf_report(Perf *perf);
+void perf_close(Perf *perf);
 
 #endif

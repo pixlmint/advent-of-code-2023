@@ -174,16 +174,25 @@ int count_paths(NodeList *start_nodes, PathMatrix *map) {
 
 int solve_day10(const char *input) {
     FILE *file = fopen(input, "r");
+    Perf *perf = perf_init();
     
+    int t_total = timer_start("Total", perf);
+    int t_read = timer_start("Reading", perf);
     PathMatrix *mat = read_map(file);
+    timer_stop(t_read, perf);
 
     fclose(file);
 
+    int t_main = timer_start("Main", perf);
     NodeList **nodes = get_nodes(mat);
     NodeList *start_nodes = nodes[0];
 
     int count = count_paths(start_nodes, mat);
+    timer_stop(t_main, perf);
     printf("Count: %d\n", count);
+
+    perf_report(perf);
+    perf_close(perf);
 
     return 0;
 }
